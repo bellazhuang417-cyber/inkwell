@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+target/
+*.dmg
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.*
+
+# Tauri build cache
+src-tauri/target/
+src-tauri/Cargo.lock
+
+# Logs
+*.log
+npm-debug.log*

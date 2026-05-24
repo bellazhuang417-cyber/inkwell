@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <clipPath id="squircle-c">
+      <path d="M 224,0 C 100,0 0,100 0,224 L 0,800 C 0,924 100,1024 224,1024 L 800,1024 C 924,1024 1024,924 1024,800 L 1024,224 C 1024,100 924,0 800,0 Z"/>
+    </clipPath>
+    <linearGradient id="vellum-bg-c" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8f6ef"/>
+      <stop offset="50%" stop-color="#f5f4ed"/>
+      <stop offset="100%" stop-color="#ede9dc"/>
+    </linearGradient>
+    <linearGradient id="ink-drip-c" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1B365D"/>
+      <stop offset="60%" stop-color="#1B365D"/>
+      <stop offset="100%" stop-color="#2d5a7a" stop-opacity="0.8"/>
+    </linearGradient>
+    <linearGradient id="olive-subtle-c" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#7a8b6e"/>
+      <stop offset="100%" stop-color="#6b7c62"/>
+    </linearGradient>
+    <filter id="soft-shadow-c" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="12" flood-color="#000" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Background: rich parchment -->
+  <rect width="1024" height="1024" fill="url(#vellum-bg-c)" clip-path="url(#squircle-c)"/>
+
+  <!-- Open notebook / book shape -->
+  <g transform="translate(512, 520)" filter="url(#soft-shadow-c)">
+    
+    <!-- Book cover / pages base -->
+    <rect x="-300" y="-280" width="600" height="520" rx="16" fill="#fffefa" opacity="0.95"/>
+    
+    <!-- Page edge shadow (left side - spine) -->
+    <rect x="-300" y="-280" width="24" height="520" rx="8" fill="#e8e2d4"/>
+    
+    <!-- Center binding line -->
+    <line x1="0" y1="-260" x2="0" y2="228" stroke="#d4cdc0" stroke-width="2"/>
+    
+    <!-- Top page curve (suggesting open book) -->
+    <path d="M -290,-260 Q 0,-300 290,-260" fill="none" stroke="#e8e2d4" stroke-width="3"/>
+    
+    <!-- Text lines on left page -->
+    <line x1="-250" y1="-180" x2="-50" y2="-180" stroke="#ccc4b5" stroke-width="8" stroke-linecap="round"/>
+    <line x1="-250" y1="-140" x2="-90" y2="-140" stroke="#d4cdc0" stroke-width="6" stroke-linecap="round"/>
+    <line x1="-250" y1="-100" x2="-120" y2="-100" stroke="#d4cdc0" stroke-width="6" stroke-linecap="round"/>
+    <line x1="-250" y1="-60" x2="-70" y2="-60" stroke="#d4cdc0" stroke-width="6" stroke-linecap="round"/>
+    
+    <!-- Text lines on right page -->
+    <line x1="50" y1="-180" x2="250" y2="-180" stroke="#ccc4b5" stroke-width="8" stroke-linecap="round"/>
+    <line x1="90" y1="-140" x2="250" y2="-140" stroke="#d4cdc0" stroke-width="6" stroke-linecap="round"/>
+    <line x1="60" y1="-100" x2="250" y2="-100" stroke="#d4cdc0" stroke-width="6" stroke-linecap="round"/>
+    
+    <!-- THE INK DRIP - main visual focal point -->
+    <path d="
+        M -40,-280
+        Q -50,-200  -30,-120
+        Q -10,-40   -35,40
+        Q -55,100   -25,160
+        Q -10,200   -30,240
+        L 30,240
+        Q 60,180   35,110
+        Q 10,40    40,-30
+        Q 65,-110  35,-190
+        Q 55,-260  40,-280
+        Z
+      " fill="url(#ink-drip-c)" opacity="0.92"/>
+    
+    <!-- Ink highlight/sheen -->
+    <ellipse cx="-10" cy="-140" rx="18" ry="45" fill="white" opacity="0.08"/>
+    
+    <!-- Small ink splash droplets -->
+    <circle cx="65" cy="185" r="10" fill="#1B365D" opacity="0.5"/>
+    <circle cx="82" cy="205" r="5" fill="#1B365D" opacity="0.3"/>
+    <circle cx="-58" cy="195" r="7" fill="#1B365D" opacity="0.35"/>
+    
+    <!-- Olive green bookmark tab peeking from bottom -->
+    <path d="M 200,230 L 260,230 L 260,270 Q 230,255 200,270 Z" fill="url(#olive-subtle-c)" opacity="0.75"/>
+    
+  </g>
+  
+  <!-- Vellum corner fold effect (top-right) -->
+  <path d="M 750,74 Q 850,80 950,74 L 950,174 Q 850,168 750,174 Z" 
+        fill="#ede9dc" opacity="0.5" clip-path="url(#squircle-c)"/>
+</svg>

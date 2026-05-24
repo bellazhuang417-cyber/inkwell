@@ -1,0 +1,148 @@
+/* ---- Font Imports ---- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* ========================================
+   HtmlNote Design System — CSS Variables
+   Namespace: --hn-*
+   ======================================== */
+
+:root {
+  /* ---- Colors: Background ---- */
+  --hn-bg:                #FAFAF7;
+  --hn-bg-alt:            #F5F3EE;
+  --hn-bg-hover:          #EFEDE6;
+  --hn-bg-active:         #E8E5DF;
+  --hn-surface:           #FFFFFF;
+
+  /* ---- Colors: Border ---- */
+  --hn-border:            #E8E5DF;
+  --hn-border-light:      #F0EDE8;
+
+  /* ---- Colors: Text ---- */
+  --hn-text-primary:      #1A1A2E;
+  --hn-text-secondary:    #5C5C6E;
+  --hn-text-tertiary:     #9494A6;
+  --hn-text-link:         #C5792A;
+  --hn-text-on-accent:    #FFFFFF;
+
+  /* ---- Colors: Accent (Amber Orange) ---- */
+  --hn-accent:            #E8913A;
+  --hn-accent-hover:      #D17F2E;
+  --hn-accent-active:     #BA6F24;
+  --hn-accent-subtle:     #FDF0E3;
+  --hn-accent-border:     #F5D5B0;
+
+  /* ---- Colors: Secondary (Sage Green) ---- */
+  --hn-secondary:         #7C9A6E;
+  --hn-secondary-hover:   #6B8A5E;
+  --hn-secondary-subtle:  #F0F4ED;
+  --hn-secondary-border:  #C5D5BC;
+
+  /* ---- Colors: Semantic ---- */
+  --hn-success:           #5B9A5B;
+  --hn-success-bg:        #EDF5ED;
+  --hn-warning:           #D4A437;
+  --hn-warning-bg:        #FDF8EB;
+  --hn-error:             #D15252;
+  --hn-error-bg:          #FAEEEE;
+  --hn-info:              #5B7FAA;
+  --hn-info-bg:           #EDF2F8;
+
+  /* ---- Colors: Code / Syntax ---- */
+  --hn-code-bg:           #F8F7F4;
+  --hn-code-tag:          #C5792A;
+  --hn-code-attr:         #7C9A6E;
+  --hn-code-value:        #5B7FAA;
+  --hn-code-text:         #5C5C6E;
+  --hn-code-comment:      #9494A6;
+
+  /* ---- Typography: Font Families ---- */
+  --hn-font-ui:           "Inter", "SF Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --hn-font-content:      "Source Serif 4", "Noto Serif SC", Georgia, "Times New Roman", serif;
+  --hn-font-code:         "JetBrains Mono", "Fira Code", "SF Mono", Menlo, monospace;
+
+  /* ---- Typography: Font Sizes ---- */
+  --hn-text-h1:           28px;
+  --hn-text-h2:           22px;
+  --hn-text-h3:           18px;
+  --hn-text-h4:           16px;
+  --hn-text-body:         15px;
+  --hn-text-body-sm:      13px;
+  --hn-text-caption:      12px;
+  --hn-text-overline:     11px;
+  --hn-text-code:         13px;
+
+  /* ---- Typography: UI Sizes ---- */
+  --hn-text-ui-title:     14px;
+  --hn-text-ui-body:      13px;
+  --hn-text-ui-small:     11px;
+  --hn-text-ui-tag:       11px;
+
+  /* ---- Spacing (4px base) ---- */
+  --hn-space-0:           0;
+  --hn-space-1:           4px;
+  --hn-space-2:           8px;
+  --hn-space-3:           12px;
+  --hn-space-4:           16px;
+  --hn-space-5:           20px;
+  --hn-space-6:           24px;
+  --hn-space-8:           32px;
+  --hn-space-10:          40px;
+  --hn-space-12:          48px;
+  --hn-space-16:          64px;
+
+  /* ---- Border Radius ---- */
+  --hn-radius-none:       0;
+  --hn-radius-sm:         4px;
+  --hn-radius-md:         6px;
+  --hn-radius-lg:         8px;
+  --hn-radius-xl:         12px;
+  --hn-radius-full:       9999px;
+
+  /* ---- Shadows ---- */
+  --hn-shadow-none:       none;
+  --hn-shadow-sm:         0 1px 2px rgba(26, 26, 46, 0.04);
+  --hn-shadow-md:         0 2px 8px rgba(26, 26, 46, 0.06);
+  --hn-shadow-lg:        0 4px 16px rgba(26, 26, 46, 0.08);
+  --hn-shadow-xl:        0 8px 32px rgba(26, 26, 46, 0.10);
+
+  /* ---- Motion ---- */
+  --hn-duration-fast:     120ms;
+  --hn-duration-normal:   200ms;
+  --hn-duration-slow:     350ms;
+  --hn-easing-default:    cubic-bezier(0.4, 0, 0.2, 1);
+  --hn-easing-spring:     cubic-bezier(0.34, 1.56, 0.64, 1);
+  --hn-easing-smooth:     cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* ---- Layout: Three-Column ---- */
+  --hn-sidebar-width:     240px;
+  --hn-sidebar-min:       200px;
+  --hn-sidebar-max:       360px;
+  --hn-right-panel-width: 280px;
+  --hn-right-panel-min:   240px;
+  --hn-right-panel-max:   400px;
+  --hn-content-min:       480px;
+
+  /* ---- Layout: Content Widths ---- */
+  --hn-reading-width:     720px;
+  --hn-editing-width:     800px;
+  --hn-code-width:        960px;
+
+  /* ---- Component Heights ---- */
+  --hn-topbar-height:     44px;
+  --hn-bottombar-height:  40px;
+  --hn-btn-height-sm:     28px;
+  --hn-btn-height-md:     36px;
+  --hn-btn-height-lg:     44px;
+  --hn-input-height:      36px;
+  --hn-search-height:     48px;
+  --hn-tree-node-height:  32px;
+  --hn-tree-indent:       16px;
+
+  /* ---- Z-Index Scale ---- */
+  --hn-z-panel:           100;
+  --hn-z-dropdown:        200;
+  --hn-z-overlay:         300;
+  --hn-z-modal:           400;
+  --hn-z-toast:           500;
+}

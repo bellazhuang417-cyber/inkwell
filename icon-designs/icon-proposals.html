@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HtmlNote App Icon — Design Proposals</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  body {
+    font-family: -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+    background: #1a1a2e;
+    color: #e8e6e3;
+    padding: 48px;
+    min-height: 100vh;
+  }
+  
+  h1 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+  }
+  
+  .subtitle {
+    color: #888;
+    font-size: 15px;
+    margin-bottom: 48px;
+  }
+  
+  .proposals {
+    display: flex;
+    gap: 64px;
+    flex-wrap: wrap;
+  }
+  
+  .proposal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 420px;
+  }
+  
+  .icon-frame {
+    width: 256px;
+    height: 256px;
+    border-radius: 56px; /* macOS squircle */
+    overflow: hidden;
+    box-shadow:
+      0 22px 70px rgba(0,0,0,0.45),
+      0 8px 24px rgba(0,0,0,0.3);
+    margin-bottom: 28px;
+    position: relative;
+  }
+
+  /* Dock size preview */
+  .dock-preview {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  .dock-preview .mini {
+    border-radius: 5.33px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+  }
+  
+  .dock-preview .size-32 { width: 32px; height: 32px; }
+  .dock-preview .size-48 { width: 48px; height: 48px; }
+  .dock-preview .size-64 { width: 64px; height: 64px; }
+  
+  h2 {
+    font-size: 19px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    letter-spacing: -0.3px;
+  }
+  
+  .proposal-name {
+    font-size: 13px;
+    color: #9b8e7f;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 4px;
+  }
+  
+  .description {
+    font-size: 14px;
+    line-height: 1.65;
+    color: #bbb;
+    text-align: center;
+    max-width: 360px;
+  }
+  
+  .color-swatches {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  
+  .swatch {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .section-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #666;
+    margin-top: 40px;
+    margin-bottom: 16px;
+  }
+</style>
+</head>
+<body>
+
+<h1>HtmlNote — App Icon 设计提案</h1>
+<p class="subtitle">Personal Knowledge Archiver · Kami Design System · 3 个方案对比</p>
+
+<div class="proposals">
+
+<!-- ============================================ -->
+<!-- PROPOSAL A: Abstract Geometric              -->
+<!-- ============================================ -->
+<div class="proposal">
+  <div class="dock-preview"></div>
+  <div class="icon-frame" id="icon-a"></div>
+  <div class="proposal-name">方案 A</div>
+  <h2>抽象几何 · Code & Note</h2>
+  <p class="description">以 HTML 标签的尖括号 `< >` 为视觉锚点，融合文档折角的笔记元素。墨蓝色主调搭配暖米色背景，几何形态干净利落，在 Dock 小尺寸下轮廓清晰可辨。</p>
+  <div class="color-swatches">
+    <div class="swatch" style="background:#1B365D" title="油墨蓝"></div>
+    <div class="swatch" style="background:#f5f4ed" title="暖米色"></div>
+    <div class="swatch" style="background:#c9a96e" title="暖沙金"></div>
+    <div class="swatch" style="background:#2d5a7a" title="靛青蓝"></div>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- PROPOSAL B: Letter Monogram                 -->
+<!-- ============================================ -->
+<div class="proposal">
+  <div class="dock-preview"></div>
+  <div class="icon-frame" id="icon-b"></div>
+  <div class="proposal-name">方案 B</div>
+  <h2>字母标志 · Serif H</h2>
+  <p class="description">基于 "H" (HtmlNote) 的衬线字体 monogram。使用霞鹜文楷风格衬线体，H 的两竖笔画融入纸张纹理意象——左竖为实、右竖带微妙的渐变层次。经典而温暖。</p>
+  <div class="color-swatches">
+    <div class="swatch" style="background:#1B365D" title="油墨蓝"></div>
+    <div class="swatch" style="background:#f5f4ed" title="暖米色"></div>
+    <div class="swatch" style="background:#8b7355" title="棕褐"></div>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- PROPOSAL C: Texture / Vellum                -->
+<!-- ============================================ -->
+<div class="proposal">
+  <div class="dock-preview"></div>
+  <div class="icon-frame" id="icon-c"></div>
+  <div class="proposal-name">方案 C</div>
+  <h2>质感系 · Vellum & Ink</h2>
+  <p class="description">羊皮纸/书籍元素 + 墨水滴落意象。打开的笔记本轮廓中，一抹墨蓝色笔触从上方自然流淌，呼应 Vellum（犊皮纸）的产品命名方向。最富叙事性，辨识度最高。</p>
+  <div class="color-swatches">
+    <div class="swatch" style="background:#1B365D" title="油墨蓝"></div>
+    <div class="swatch" style="background:#f5f4ed" title="暖米色"></div>
+    <div class="swatch" style="background:#6b7c62" title="橄榄绿"></div>
+    <div class="swatch" style="background:#c17a4e" title="赭石"></div>
+  </div>
+</div>
+
+</div>
+
+<script>
+// macOS Big Sur+ squircle path (approximation using SVG)
+const SQUIRCLE_SVG = `
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <!-- squircle clip path for macOS-style rounded rect -->
+    <clipPath id="squircle">
+      <path d="
+        M 224,0
+        C 100,0  0,100  0,224
+        L 0,800
+        C 0,924 100,1024 224,1024
+        L 800,1024
+        C 924,1024 1024,924 1024,800
+        L 1024,224
+        C 1024,100  924,0  800,0
+        Z
+      "/>
+    </clipPath>
+    
+    <!-- subtle parchment texture -->
+    <filter id="paper-texture" x="0%" y="0%" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="5" result="noise"/>
+      <feDiffuseLighting in="noise" lighting-color="#f5f4ed" surfaceScale="1.5" result="light">
+        <feDistantLight azimuth="45" elevation="60"/>
+      </feDiffuseLighting>
+      <feBlend in="SourceGraphic" in2="light" mode="multiply"/>
+    </filter>
+    
+    <linearGradient id="ink-blue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1B365D"/>
+      <stop offset="100%" stop-color="#2d5a7a"/>
+    </linearGradient>
+    
+    <linearGradient id="ink-deep" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1B365D"/>
+      <stop offset="100%" stop-color="#122a47"/>
+    </linearGradient>
+    
+    <linearGradient id="warm-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c9a96e"/>
+      <stop offset="100%" stop-color="#b8956a"/>
+    </linearGradient>
+    
+    <linearGradient id="vellum-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8f6ef"/>
+      <stop offset="50%" stop-color="#f5f4ed"/>
+      <stop offset="100%" stop-color="#ede9dc"/>
+    </linearGradient>
+    
+    <linearGradient id="olive-subtle" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#7a8b6e"/>
+      <stop offset="100%" stop-color="#6b7c62"/>
+    </linearGradient>
+
+    <!-- ink drip gradient -->
+    <linearGradient id="ink-drip" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1B365D"/>
+      <stop offset="60%" stop-color="#1B365D"/>
+      <stop offset="100%" stop-color="#2d5a7a" stop-opacity="0.8"/>
+    </linearGradient>
+    
+    <!-- inner shadow for depth -->
+    <filter id="inner-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="8" result="blur"/>
+      <feOffset dx="2" dy="4" result="offsetBlur"/>
+      <feComposite in="SourceGraphic" in2="offsetBlur" operator="over"/>
+    </filter>
+
+    <!-- soft drop shadow inside icon -->
+    <filter id="soft-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="12" flood-color="#000" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+`;
+
+// ========== ICON A: Abstract Geometric ==========
+const ICON_A = SQUIRCLE_SVG + `
+  <!-- Background: warm parchment -->
+  <rect width="1024" height="1024" fill="url(#vellum-bg)" clip-path="url(#squircle)"/>
+  
+  <!-- Subtle paper grain overlay -->
+  <rect width="1024" height="1024" fill="#f5f4ed" opacity="0.4" clip-path="url(#squircle)"
+        style="filter:url(#paper-texture)"/>
+
+  <!-- Main geometric composition: angle brackets + document fold -->
+  <g transform="translate(512, 512)" filter="url(#soft-shadow)">
+    
+    <!-- Left angle bracket `<` stylized -->
+    <path d="M -180,-220 
+             L -280,-80
+             L -180,60
+             L -220,80
+             L -340,-80
+             L -180,-260
+             Z"
+          fill="url(#ink-blue)"/>
+    
+    <!-- Right angle bracket `>` stylized -->
+    <path d="M 180,-220 
+             L 280,-80
+             L 180,60
+             L 220,80
+             L 340,-80
+             L 180,-260
+             Z"
+          fill="url(#ink-blue)"/>
+    
+    <!-- Document / note indicator: small folded corner element -->
+    <path d="M -30,160
+             L 30,160
+             L 30,200
+             L -30,200
+             Z"
+          fill="url(#warm-gold)" opacity="0.85"/>
+    
+    <!-- Horizontal line suggesting text/content -->
+    <line x1="-90" y1="100" x2="90" y2="100" stroke="url(#ink-blue)" stroke-width="14" stroke-linecap="round" opacity="0.5"/>
+    <line x1="-60" y1="135" x2="60" y2="135" stroke="url(#ink-blue)" stroke-width="10" stroke-linecap="round" opacity="0.3"/>
+    
+  </g>
+  
+  <!-- Top accent: tiny dot like a cursor/pen point -->
+  <circle cx="512" cy="240" r="10" fill="url(#warm-gold)"/>
+</svg>`;
+
+// ========== ICON B: Letter Monogram H ==========
+const ICON_B = SQUIRCLE_SVG + `
+  <!-- Background: warm parchment with subtle gradient -->
+  <rect width="1024" height="1024" fill="url(#vellum-bg)" clip-path="url(#squircle)"/>
+  
+  <rect width="1024" height="1024" fill="#f5f4ed" opacity="0.3" clip-path="url(#squircle)"
+        style="filter:url(#paper-texture)"/>
+
+  <!-- H Monogram -->
+  <g transform="translate(512, 520)">
+    
+    <!-- Left stem of H - solid ink blue -->
+    <rect x="-190" y="-260" width="72" height="520" rx="8" fill="url(#ink-deep)"/>
+    
+    <!-- Right stem of H - with subtle gradient for depth -->
+    <rect x="118" y="-260" width="72" height="520" rx="8" fill="url(#ink-blue)" opacity="0.85"/>
+    
+    <!-- Crossbar of H -->
+    <rect x="-170" y="-36" width="340" height="68" rx="8" fill="url(#ink-blue)"/>
+    
+    <!-- Serif detail on left top -->
+    <path d="M -198,-260 L -154,-260 L -154,-272 L -210,-272 L -210,-248 Z" fill="url(#ink-deep)"/>
+    
+    <!-- Serif detail on left bottom -->
+    <path d="M -198,260 L -154,260 L -154,272 L -210,272 L -210,248 Z" fill="url(#ink-deep)"/>
+    
+    <!-- Serif detail on right top -->
+    <path d="M 154,-260 L 198,-260 L 210,-248 L 210,-272 L 154,-272 Z" fill="url(#ink-blue)"/>
+    
+    <!-- Serif detail on right bottom -->
+    <path d="M 154,260 L 198,260 L 210,248 L 210,272 L 154,272 Z" fill="url(#ink-blue)"/>
+    
+    <!-- Decorative gold accent: small leaf/quill hint at crossbar -->
+    <circle cx="140" cy="-2" r="14" fill="url(#warm-gold)" opacity="0.9"/>
+    
+  </g>
+  
+  <!-- Subtle bottom decoration line -->
+  <line x1="320" y1="860" x2="704" y2="860" stroke="#c9a96e" stroke-width="3" stroke-linecap="round" opacity="0.4"/>
+</svg>`;
+
+// ========== ICON C: Vellum & Ink Texture ==========
+const ICON_C = SQUIRCLE_SVG + `
+  <!-- Background: rich parchment -->
+  <rect width="1024" height="1024" fill="url(#vellum-bg)" clip-path="url(#squircle)"/>
+  
+  <rect width="1024" height="1024" fill="#f5f4ed" opacity="0.35" clip-path="url(#squircle)"
+        style="filter:url(#paper-texture)"/>
+
+  <!-- Open notebook / book shape -->
+  <g transform="translate(512, 520)" filter="url(#soft-shadow)">
+    
+    <!-- Book cover / pages base -->
+    <rect x="-300" y="-280" width="600" height="520" rx="16" fill="#fffefa" opacity="0.9"/>
+    
+    <!-- Page edge shadow (left side - spine) -->
+    <rect x="-300" y="-280" width="24" height="520" rx="8" fill="#e8e2d4"/>
+    
+    <!-- Center binding line -->
+    <line x1="0" y1="-260" x2="0" y2="228" stroke="#d4cdc0" stroke-width="2"/>
+    
+    <!-- Top page curve (suggesting open book) -->
+    <path d="M -290,-260 Q 0,-300 290,-260" fill="none" stroke="#e8e2d4" stroke-width="3"/>
+    
+    <!-- Text lines on left page -->
+    <line x1="-250" y1="-180" x2="-50" y2="-180" stroke="#ccc4b5" stroke-width="8" stroke-linecap="round"/>
+    <line x1="-250" y1="-140" x2="-90" y2="-140" stroke="#d4cdc0" stroke-width="6" stroke-linecap="round"/>
+    <line x1="-250" y1="-100" x2="-120" y2="-100" stroke="#d4cdc0" stroke-width="6" stroke-linecap="round"/>
+    <line x1="-250" y1="-60" x2="-70" y2="-60" stroke="#d4cdc0" stroke-width="6" stroke-linecap="round"/>
+    
+    <!-- Text lines on right page -->
+    <line x1="50" y1="-180" x2="250" y2="-180" stroke="#ccc4b5" stroke-width="8" stroke-linecap="round"/>
+    <line x1="90" y1="-140" x2="250" y2="-140" stroke="#d4cdc0" stroke-width="6" stroke-linecap="round"/>
+    <line x1="60" y1="-100" x2="250" y2="-100" stroke="#d4cdc0" stroke-width="6" stroke-linecap="round"/>
+    
+    <!-- THE INK DRIP - main visual focal point -->
+    <path d="
+        M -40,-280
+        Q -50,-200  -30,-120
+        Q -10,-40   -35,40
+        Q -55,100   -25,160
+        Q -10,200   -30,240
+        L 30,240
+        Q 60,180   35,110
+        Q 10,40    40,-30
+        Q 65,-110  35,-190
+        Q 55,-260  40,-280
+        Z
+      " fill="url(#ink-drip)" opacity="0.92"/>
+    
+    <!-- Ink highlight/sheen -->
+    <ellipse cx="-10" cy="-140" rx="18" ry="45" fill="white" opacity="0.08"/>
+    
+    <!-- Small ink splash droplets -->
+    <circle cx="65" cy="185" r="10" fill="#1B365D" opacity="0.5"/>
+    <circle cx="82" cy="205" r="5" fill="#1B365D" opacity="0.3"/>
+    <circle cx="-58" cy="195" r="7" fill="#1B365D" opacity="0.35"/>
+    
+    <!-- Olive green bookmark tab peeking from bottom -->
+    <path d="M 200,230 L 260,230 L 260,270 Q 230,255 200,270 Z" fill="url(#olive-subtle)" opacity="0.75"/>
+    
+  </g>
+  
+  <!-- Vellum corner fold effect (top-right) -->
+  <path d="M 750,74 Q 850,80 950,74 L 950,174 Q 850,168 750,174 Z" 
+        fill="#ede9dc" opacity="0.5" clip-path="url(#squircle)"/>
+</svg>`;
+
+document.getElementById('icon-a').innerHTML = ICON_A;
+document.getElementById('icon-b').innerHTML = ICON_B;
+document.getElementById('icon-c').innerHTML = ICON_C;
+
+// Generate dock size previews
+document.querySelectorAll('.dock-preview').forEach((el, i) => {
+  const icons = [ICON_A, ICON_B, ICON_C];
+  el.innerHTML = `
+    <div class="mini size-32">${icons[i].replace(/width="1024"/g, 'width="32"').replace(/height="1024"/g, 'height="32"')}</div>
+    <div class="mini size-48">${icons[i].replace(/width="1024"/g, 'width="48"').replace(/height="1024"/g, 'height="48"')}</div>
+    <div class="mini size-64">${icons[i].replace(/width="1024"/g, 'width="64"').replace(/height="1024"/g, 'height="64"')}</div>
+  `;
+});
+</script>
+
+</body>
+</html>

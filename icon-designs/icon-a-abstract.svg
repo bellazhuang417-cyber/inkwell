@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <clipPath id="squircle-a">
+      <path d="M 224,0 C 100,0 0,100 0,224 L 0,800 C 0,924 100,1024 224,1024 L 800,1024 C 924,1024 1024,924 1024,800 L 1024,224 C 1024,100 924,0 800,0 Z"/>
+    </clipPath>
+    <linearGradient id="ink-blue-a" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1B365D"/>
+      <stop offset="100%" stop-color="#2d5a7a"/>
+    </linearGradient>
+    <linearGradient id="warm-gold-a" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c9a96e"/>
+      <stop offset="100%" stop-color="#b8956a"/>
+    </linearGradient>
+    <linearGradient id="vellum-bg-a" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8f6ef"/>
+      <stop offset="50%" stop-color="#f5f4ed"/>
+      <stop offset="100%" stop-color="#ede9dc"/>
+    </linearGradient>
+    <filter id="soft-shadow-a" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="12" flood-color="#000" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Background: warm parchment -->
+  <rect width="1024" height="1024" fill="url(#vellum-bg-a)" clip-path="url(#squircle-a)"/>
+
+  <!-- Main geometric composition: angle brackets + document fold -->
+  <g transform="translate(512, 512)" filter="url(#soft-shadow-a)">
+    
+    <!-- Left angle bracket `<` stylized -->
+    <path d="M -180,-220 L -280,-80 L -180,60 L -220,80 L -340,-80 L -180,-260 Z" fill="url(#ink-blue-a)"/>
+    
+    <!-- Right angle bracket `>` stylized -->
+    <path d="M 180,-220 L 280,-80 L 180,60 L 220,80 L 340,-80 L 180,-260 Z" fill="url(#ink-blue-a)"/>
+    
+    <!-- Document / note indicator -->
+    <path d="M -30,160 L 30,160 L 30,200 L -30,200 Z" fill="url(#warm-gold-a)" opacity="0.85"/>
+    
+    <!-- Horizontal lines suggesting text/content -->
+    <line x1="-90" y1="100" x2="90" y2="100" stroke="url(#ink-blue-a)" stroke-width="14" stroke-linecap="round" opacity="0.5"/>
+    <line x1="-60" y1="135" x2="60" y2="135" stroke="url(#ink-blue-a)" stroke-width="10" stroke-linecap="round" opacity="0.3"/>
+    
+  </g>
+  
+  <!-- Top accent dot like a cursor/pen point -->
+  <circle cx="512" cy="240" r="10" fill="url(#warm-gold-a)"/>
+</svg>
