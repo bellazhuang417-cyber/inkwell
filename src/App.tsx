@@ -468,8 +468,8 @@ function App() {
       if (/^##### /.test(line)) return line.replace(/^##### (.*)$/, '<h5>$1</h5>');
       if (/^#### /.test(line)) return line.replace(/^#### (.*)$/, '<h4>$1</h4>');
       if (/^### /.test(line)) return line.replace(/^### (.*)$/, '<h3>$1</h3>');
-      if (/^## /.test(line) && !/^##\s/.test(line)) return line.replace(/^## (.*)$/, '<h2>$1</h2>');
-      if (/^# /.test(line) && !/^#\s/.test(line)) return line.replace(/^# (.*)$/, '<h1>$1</h1>');
+      if (/^## /.test(line)) return line.replace(/^## (.*)$/, '<h2>$1</h2>');
+      if (/^# /.test(line)) return line.replace(/^# (.*)$/, '<h1>$1</h1>');
       return line;
     }).join('\n');
 
