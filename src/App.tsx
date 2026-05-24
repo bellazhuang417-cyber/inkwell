@@ -539,14 +539,84 @@ function App() {
       return line;
     }).join('\n');
 
-    // === 15. Wrap consecutive <li> into <ul>/<ol> with nesting ===
+    // === 15. GFM Tables (pipe syntax) ===
+    // Must run before wrapParagraphs so table blocks are recognized as containers
+    html = renderGFMTables(html);
+
+    // === 16. Wrap consecutive <li> into <ul>/<ol> with nesting ===
     html = wrapListItems(html);
 
-    // === 16. Smart paragraph wrapping ===
+    // === 17. Smart paragraph wrapping ===
     html = wrapParagraphs(html);
 
     return html;
   };
+
+  /** Render GFM (GitHub Flavored Markdown) pipe tables into <table> HTML */
+  function renderGFMTables(text: string): string {
+    const lines = text.split('\n');
+    const result: string[] = [];
+    let tableLines: string[] | null = null;
+
+    for (const rawLine of lines) {
+      const line = rawLine;
+      // A table row contains at least one unescaped | (not at start/end only)
+      const isTableRow = /^\|(.+)\|$/.test(line.trim());
+      const isSeparator = /^\|[\s\-:|\s]+\|$/.test(line.trim());
+
+      if (isTableRow || isSeparator) {
+        if (tableLines === null) {
+          // Check this isn't a standalone | inside a paragraph
+          // by looking back: if previous non-empty line wasn't a table row, start new
+          tableLines = [];
+        }
+        tableLines.push(line);
+      } else {
+        if (tableLines !== null) {
+          // Flush accumulated table lines
+          result.push(buildGFMTable(tableLines));
+          tableLines = null;
+        }
+        result.push(line);
+      }
+    }
+
+    // Flush any remaining table
+    if (tableLines !== null) {
+      result.push(buildGFMTable(tableLines));
+    }
+
+    return result.join('\n');
+  }
+
+  /** Convert an array of GFM table lines into a <table> element */
+  function buildGFMTable(lines: string[]): string {
+    const rows: string[][] = [];
+    for (const line of lines) {
+      const trimmed = line.trim();
+      // Skip separator line (e.g., |---|---|)
+      if (/^[\s\-:|]+$/.test(trimmed.replace(/^\|/, '').replace(/\|$/, ''))) continue;
+      // Split by |, trim each cell
+      const cells = trimmed.replace(/^\|/, '').replace(/\|$/, '').split('|').map(c => c.trim());
+      rows.push(cells);
+    }
+
+    if (rows.length === 0) return '';
+
+    const numCols = Math.max(...rows.map(r => r.length));
+    let html = '<table>\n';
+    for (let i = 0; i < rows.length; i++) {
+      const tag = i === 0 ? 'th' : 'td';
+      html += '  <tr>';
+      for (let j = 0; j < numCols; j++) {
+        const cell = rows[i][j] || '';
+        html += `<${tag}>${cell}</${tag}>`;
+      }
+      html += '</tr>\n';
+    }
+    html += '</table>';
+    return html;
+  }
 
   /** Split text before bullet markers that appear mid-line (Chinese export format) */
   function textSplitBeforeBullets(text: string): string {
@@ -607,7 +677,7 @@ function App() {
       const trimmed = block.trim();
       if (!trimmed) return '';
       // Already a block element?
-      if (/^<(h[1-6]|hr|pre|ul|ol|blockquote|div|img)[\s>]/.test(trimmed)) return block;
+      if (/^<(h[1-6]|hr|pre|ul|ol|blockquote|div|img|table)[\s>]/.test(trimmed)) return block;
       // Process each line within the block
       const lines = block.split('\n').filter(l => l.trim());
       return '\n' + lines.map(l => {
@@ -814,6 +884,29 @@ function App() {
   ul li.indent-1 { margin-left: 1.2em; }
   ul li.indent-2 { margin-left: 2.4em; color: var(--olive); }
   ul li.indent-3 { margin-left: 3.6em; color: var(--stone); }
+
+  /* === GFM Tables === */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.2em 0;
+    font-size: 0.92em;
+    line-height: 1.6;
+  }
+  th, td {
+    padding: 0.6em 1em;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  th {
+    font-weight: 600;
+    color: var(--brand);
+    background: rgba(27, 54, 93, 0.05);
+    border-bottom: 2px solid var(--brand);
+  }
+  tr:hover td { background: rgba(27, 54, 93, 0.03); }
+  tr:last-child td { border-bottom: none; }
 </style>
 </head>
 <body>${rendered}</body>
