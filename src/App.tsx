@@ -13,6 +13,7 @@ import {
   ArrowRight,
   AlertCircle,
   Filter,
+  RotateCw,
 } from 'lucide-react';
 import type { FileNode, OpenFile, ViewType } from './types';
 import {
@@ -348,6 +349,13 @@ function App() {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [currentFile, siblings, siblingIndex]);
+
+  // Refresh current folder
+  const handleRefresh = async () => {
+    if (!vaultPath) return;
+    const nodes = await readDirectory(vaultPath);
+    setTree(nodes);
+  };
 
   // Open folder
   const handleOpenFolder = async () => {
@@ -958,6 +966,9 @@ function App() {
                 title={htmlOnly ? '显示全部文件' : '仅显示 HTML'}
               >
                 <Filter size={14} />
+              </button>
+              <button className="view-btn" onClick={handleRefresh} title="刷新 / Refresh">
+                <RotateCw size={14} />
               </button>
               <button className="view-btn" onClick={handleOpenFolder} title="切换文件夹">
                 <FolderSync size={14} />
