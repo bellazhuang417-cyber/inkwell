@@ -60,9 +60,56 @@ jobs:
         with:
           files: ${{ env.ASSET }}
           body: |
+            ## Installation (macOS)
+
+            > **Note:** Inkwell is not yet signed with an Apple Developer certificate. macOS may show a "cannot verify" warning — this does not mean the app is harmful. Follow the steps below to install it safely.
+
+            ---
+
+            ### Option 1: One-command install (recommended)
+
+            Open **Terminal** and paste the following command, then press Enter:
+
+            ```bash
+            curl -fsSL https://raw.githubusercontent.com/bellazhuang417-cyber/inkwell/main/install.sh | bash
+            ```
+
+            Once done, find Inkwell in your Applications folder and double-click to open.
+
+            ---
+
+            ### Option 2: Manual install
+
+            1. Download `Inkwell_${{ github.ref_name }}_aarch64.tar.gz`
+            2. Double-click to extract — you'll get `Inkwell.app`
+            3. Drag `Inkwell.app` into your Applications folder
+            4. **Do not double-click to open yet.** Instead: right-click Inkwell.app → choose **Open** → click **Open** again in the dialog
+            5. After this first launch, you can open it normally by double-clicking
+
+            ---
+
+            ### Still can't open it?
+
+            Open Terminal and run:
+
+            ```bash
+            xattr -cr /Applications/Inkwell.app
+            ```
+
+            Then double-click Inkwell.app again.
+
+            ---
+
+            ### First launch
+
+            Click the folder icon in the top-left to choose your notes folder. Inkwell will remember it on future launches.
+
+            ---
+            ---
+
             ## 安装说明（macOS）
 
-            > **重要提示**：Inkwell 目前没有 Apple 官方签名，macOS 会提示"无法验证"。这不代表软件有问题，按下面的步骤可以正常安装。
+            > **提示**：Inkwell 目前没有 Apple 官方签名，macOS 会提示"无法验证"。这不代表软件有问题，按下面步骤即可正常安装。
 
             ---
 
@@ -102,4 +149,4 @@ jobs:
 
             ### 首次使用
 
-            打开后点击左上角的文件夹图标，选择你存放笔记的文件夹，即可开始使用。
+            打开后点击左上角的文件夹图标，选择你存放笔记的文件夹，之后每次打开会自动恢复。
