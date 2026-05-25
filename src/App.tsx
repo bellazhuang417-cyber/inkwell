@@ -435,7 +435,7 @@ function App() {
       };
 
       setCurrentFile(file);
-      setViewType(fileType === 'other' ? 'empty' : fileType === 'yaml' ? 'yaml' : 'html');
+      setViewType(fileType === 'other' ? 'empty' : 'html');
 
       const parentPath = node.path.substring(0, node.path.lastIndexOf('/'));
       if (vaultPath) {
@@ -954,6 +954,9 @@ function App() {
 <body>${rendered}</body>
 </html>`;
     }
+    if (file.fileType === 'yaml') {
+      return buildYamlSrcDoc(file.content);
+    }
     // For HTML files, pass content directly
     return file.content;
   };
@@ -1131,6 +1134,8 @@ function App() {
                     <span className="html-filename">{currentFile.name}</span>
                     {currentFile.fileType === 'md' ? (
                       <span className="html-trust-badge">渲染预览</span>
+                    ) : currentFile.fileType === 'yaml' ? (
+                      <span className="html-trust-badge">YAML 渲染</span>
                     ) : (
                       <span className="html-trust-badge">本地信任</span>
                     )}
@@ -1148,21 +1153,27 @@ function App() {
             )}
 
             {viewType === 'yaml' && currentFile && (
-              <div className="html-render-view">
-                <div className="html-meta-bar">
-                  <div className="html-meta-info">
-                    <FileText size={14} style={{ color: 'var(--hn-accent)' }} />
-                    <span className="html-filename">{currentFile.name}</span>
-                    <span className="html-trust-badge">YAML 预览</span>
+              <div className="md-editor-view">
+                <div className="md-editor-meta">
+                  <div className="md-filename">
+                    <FileText size={14} style={{ color: 'var(--hn-secondary)' }} />
+                    {currentFile.name} — 原始源码
                   </div>
                 </div>
-                <div className="html-render-scroll">
-                  <iframe
-                    className="html-render-iframe"
-                    srcDoc={buildYamlSrcDoc(currentFile.content)}
-                    sandbox="allow-scripts allow-same-origin"
-                    title={currentFile.name}
-                  />
+                <div className="md-editor-split" style={{ gridTemplateColumns: '1fr' }}>
+                  <div className="md-editor-pane" style={{ width: '100%' }}>
+                    <textarea
+                      style={{
+                        width: '100%', height: '100%', border: 'none', outline: 'none',
+                        resize: 'none', padding: '16px 24px',
+                        fontFamily: 'var(--hn-font-code)', fontSize: '13px',
+                        lineHeight: '1.6', color: 'var(--hn-text-primary)',
+                        background: 'var(--hn-surface)',
+                      }}
+                      value={currentFile.content}
+                      readOnly
+                    />
+                  </div>
                 </div>
               </div>
             )}
@@ -1277,7 +1288,7 @@ function App() {
                 <button
                   className={`view-btn ${viewType === 'yaml' ? 'active' : ''}`}
                   onClick={() => setViewType('yaml')}
-                  title="YAML 预览"
+                  title="YAML 源码"
                 >
                   YAML
                 </button>
