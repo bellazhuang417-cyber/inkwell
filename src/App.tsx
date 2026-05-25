@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { listen } from '@tauri-apps/api/event';
 import {
   FolderOpen,
   Folder,
@@ -20,6 +21,7 @@ import {
   readDirectory,
   readFile,
   openFolderDialog,
+  watchDirectory,
 } from './utils/tauri-api';
 import './styles/global.css';
 
@@ -351,11 +353,26 @@ function App() {
   }, [currentFile, siblings, siblingIndex]);
 
   // Refresh current folder
-  const handleRefresh = async () => {
+  const handleRefresh = useCallback(async () => {
     if (!vaultPath) return;
     const nodes = await readDirectory(vaultPath);
     setTree(nodes);
-  };
+  }, [vaultPath]);
+
+  // Watch for file system changes and auto-refresh (1s debounce)
+  useEffect(() => {
+    if (!vaultPath) return;
+    let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+    watchDirectory(vaultPath).catch(() => {});
+    const unlistenPromise = listen('directory-changed', () => {
+      if (debounceTimer) clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => handleRefresh(), 1000);
+    });
+    return () => {
+      if (debounceTimer) clearTimeout(debounceTimer);
+      unlistenPromise.then((unlisten) => unlisten());
+    };
+  }, [vaultPath, handleRefresh]);
 
   // Open folder
   const handleOpenFolder = async () => {

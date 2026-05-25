@@ -1,6 +1,9 @@
 use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::PathBuf;
+use std::sync::Mutex;
+use notify::{recommended_watcher, RecursiveMode, Watcher, Event};
+use tauri::{AppHandle, Emitter, Manager, State};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
@@ -19,6 +22,8 @@ pub struct FileContent {
     content: String,
     ext: String,
 }
+
+struct WatcherState(Mutex<Option<Box<dyn Watcher + Send>>>);
 
 const SKIP_DIRS: &[&str] = &[
     "node_modules",
@@ -71,7 +76,6 @@ fn read_directory_inner(dir_path: &str, max_depth: usize) -> Result<Vec<FileNode
         let file_path = entry.path();
         let is_dir = file_path.is_dir();
 
-        // Skip common large directories
         if is_dir && SKIP_DIRS.contains(&name.to_lowercase().as_str()) {
             continue;
         }
@@ -137,9 +141,29 @@ fn get_home_dir() -> Result<String, String> {
         .ok_or_else(|| "Cannot determine home directory".to_string())
 }
 
+#[tauri::command]
+fn watch_directory(path: String, app: AppHandle, state: State<WatcherState>) -> Result<(), String> {
+    let app_handle = app.clone();
+
+    let mut watcher = recommended_watcher(move |res: Result<Event, notify::Error>| {
+        if res.is_ok() {
+            let _ = app_handle.emit("directory-changed", ());
+        }
+    })
+    .map_err(|e| e.to_string())?;
+
+    watcher
+        .watch(std::path::Path::new(&path), RecursiveMode::Recursive)
+        .map_err(|e| e.to_string())?;
+
+    *state.0.lock().unwrap() = Some(Box::new(watcher));
+    Ok(())
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .manage(WatcherState(Mutex::new(None)))
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_dialog::init())
         .setup(|app| {
@@ -157,6 +181,7 @@ pub fn run() {
             read_file,
             write_file,
             get_home_dir,
+            watch_directory,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

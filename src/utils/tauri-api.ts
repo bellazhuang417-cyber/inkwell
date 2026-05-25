@@ -22,6 +22,11 @@ export async function getHomeDir(): Promise<string> {
   return invoke<string>('get_home_dir');
 }
 
+// Start watching a directory for changes
+export async function watchDirectory(path: string): Promise<void> {
+  return invoke('watch_directory', { path });
+}
+
 // Open a folder picker dialog
 export async function openFolderDialog(): Promise<string | null> {
   const selected = await open({
