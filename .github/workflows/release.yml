@@ -1,0 +1,71 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build-macos:
+    runs-on: macos-14  # Apple Silicon (arm64)
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin
+
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Tauri app
+        run: npm run tauri build -- --target aarch64-apple-darwin
+
+      - name: Fix code signature
+        run: |
+          APP=$(find src-tauri/target/aarch64-apple-darwin/release/bundle/macos -name "*.app" | head -1)
+          echo "App path: $APP"
+          # Re-sign with proper deep adhoc signature so macOS shows
+          # "can't verify developer" instead of "app is damaged"
+          codesign --deep --force -s - "$APP"
+
+      - name: Package
+        run: |
+          APP=$(find src-tauri/target/aarch64-apple-darwin/release/bundle/macos -name "*.app" | head -1)
+          DIR=$(dirname "$APP")
+          NAME=$(basename "$APP")
+          TAG=${{ github.ref_name }}
+          cd "$DIR"
+          tar -czf "Inkwell_${TAG}_aarch64.tar.gz" "$NAME"
+          echo "ASSET=$DIR/Inkwell_${TAG}_aarch64.tar.gz" >> $GITHUB_ENV
+
+      - name: Upload Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ env.ASSET }}
+          body: |
+            ## 安装方法
+
+            **一键安装（推荐）：**
+            ```bash
+            curl -fsSL https://raw.githubusercontent.com/bellazhuang417-cyber/inkwell/main/install.sh | bash
+            ```
+
+            **手动安装：**
+            1. 下载 `Inkwell_${{ github.ref_name }}_aarch64.tar.gz`
+            2. 解压后右键点击 `Inkwell.app` → 选择「打开」→ 再次点击「打开」
+
+            > macOS 会提示"无法验证开发者"，这是正常的。右键打开可以绕过这个限制。
