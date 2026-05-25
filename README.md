@@ -1,6 +1,6 @@
-# Inkwell — HTML & Markdown Notebook
+# Inkwell — HTML, Markdown & YAML Notebook
 
-Inkwell is a notebook app for browsing and managing local **.html** and **.md** files — render them natively, navigate with a file tree, and track backlinks between notes.
+Inkwell is a notebook app for browsing and managing local **.html**, **.md**, and **.yaml** files — render them natively, navigate with a file tree, and track backlinks between notes.
 
 Built for people with large collections of AI-generated HTML files (reports, visualizations, card notes) that Obsidian can't open and Finder can't preview.
 
@@ -9,7 +9,7 @@ Built for people with large collections of AI-generated HTML files (reports, vis
 
 ---
 
-**左边文件树，右边直接渲染。Markdown 能看，HTML 也能看，不用切浏览器。**
+**左边文件树，右边直接渲染。Markdown 能看，HTML 也能看，YAML 也能看，不用切浏览器。**
 
 **🌐 网页版（Chrome/Edge，任意系统）：** [bellazhuang417-cyber.github.io/inkwell](https://bellazhuang417-cyber.github.io/inkwell/)
 **🖥️ 桌面版（macOS Apple Silicon）：** [下载 Releases](https://github.com/bellazhuang417-cyber/inkwell/releases)
@@ -20,7 +20,9 @@ Built for people with large collections of AI-generated HTML files (reports, vis
 
 - **Native HTML rendering** — CSS, SVG, charts, and interactive components render exactly as in a browser
 - **Markdown rendering** — GFM tables, YAML frontmatter, and common formatting supported
+- **YAML rendering** — `.yaml` / `.yml` files render as formatted preview; switch to raw source anytime
 - **File tree navigation** — Browse folder structure, expand subdirectories on demand
+- **Auto file refresh** — File tree updates automatically when files change on disk
 - **Backlinks panel** — See which files reference the current note
 - **HTML-only filter** — One click to hide non-HTML files
 - **Keyboard shortcuts** — `⌘K` global search, `J`/`K` to move between files
@@ -102,12 +104,13 @@ xattr -cr /Applications/Inkwell.app
 | Previous file | `K` |
 | Next file | `J` |
 | Filter HTML only | Filter button (top-left) |
+| Refresh file tree | Refresh button (top-left of sidebar) |
 
 On first launch, click the folder icon to choose your notes folder. Inkwell remembers it on future launches.
 
 ---
 
-## Current Limitations / 当前局限 (v0.1.x)
+## Current Limitations / 当前局限
 
 - **Read-only** — editing is not yet supported（暂不支持编辑）
 - **No wikilinks** — `[[wikilink]]` navigation not yet implemented（暂不支持 wikilink 跳转）
