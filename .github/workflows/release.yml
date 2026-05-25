@@ -60,15 +60,46 @@ jobs:
         with:
           files: ${{ env.ASSET }}
           body: |
-            ## 安装方法
+            ## 安装说明（macOS）
 
-            **一键安装（推荐）：**
+            > **重要提示**：Inkwell 目前没有 Apple 官方签名，macOS 会提示"无法验证"。这不代表软件有问题，按下面的步骤可以正常安装。
+
+            ---
+
+            ### 方法一：一键安装（推荐）
+
+            打开「终端」（Terminal），复制粘贴下面这行命令，回车运行：
+
             ```bash
             curl -fsSL https://raw.githubusercontent.com/bellazhuang417-cyber/inkwell/main/install.sh | bash
             ```
 
-            **手动安装：**
-            1. 下载 `Inkwell_${{ github.ref_name }}_aarch64.tar.gz`
-            2. 解压后右键点击 `Inkwell.app` → 选择「打开」→ 再次点击「打开」
+            运行完毕后，在「应用程序」文件夹里找到 Inkwell，双击即可打开。
 
-            > macOS 会提示"无法验证开发者"，这是正常的。右键打开可以绕过这个限制。
+            ---
+
+            ### 方法二：手动安装
+
+            1. 下载 `Inkwell_${{ github.ref_name }}_aarch64.tar.gz`
+            2. 双击解压，得到 `Inkwell.app`
+            3. 把 `Inkwell.app` 拖入「应用程序」文件夹
+            4. **不要直接双击打开**，改为：右键点击 Inkwell.app → 选「打开」→ 弹窗里再点「打开」
+            5. 之后每次双击就能正常打开了
+
+            ---
+
+            ### 如果还是打不开
+
+            打开「终端」，运行：
+
+            ```bash
+            xattr -cr /Applications/Inkwell.app
+            ```
+
+            然后再双击 Inkwell.app。
+
+            ---
+
+            ### 首次使用
+
+            打开后点击左上角的文件夹图标，选择你存放笔记的文件夹，即可开始使用。
