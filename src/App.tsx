@@ -1168,9 +1168,9 @@ function App() {
                   if (currentFile) setViewType('md');
                 }}
                 disabled={!currentFile}
-                title="Markdown 编辑"
+                title={currentFile?.ext === 'yaml' || currentFile?.ext === 'yml' ? 'YAML 源码' : 'Markdown 编辑'}
               >
-                MD
+                {currentFile?.ext === 'yaml' || currentFile?.ext === 'yml' ? 'YAML' : 'MD'}
               </button>
             </div>
           </div>
