@@ -300,26 +300,30 @@ function App() {
   const mdEditorRef = useRef<HTMLDivElement>(null);
   const mdPreviewRef = useRef<HTMLDivElement>(null);
 
-  // Load vault on mount (default to BellaLog)
+  // Load vault on mount — restore last opened path from localStorage
   useEffect(() => {
-    async function loadDefault() {
+    async function loadSaved() {
+      const saved = localStorage.getItem('inkwell_vault_path');
+      if (!saved) {
+        setInitLoading(false);
+        return;
+      }
       try {
         setInitLoading(true);
         setInitError(null);
-        const home = await getHomeDir();
-        const defaultPath = `${home}/Documents/Bella_AI_World`;
-        setVaultPath(defaultPath);
-        const nodes = await readDirectory(defaultPath);
+        setVaultPath(saved);
+        const nodes = await readDirectory(saved);
         setTree(nodes);
       } catch (e) {
         const msg = e instanceof Error ? e.message : String(e);
-        console.error('[HtmlNote] Init error:', msg);
+        console.error('[Inkwell] Init error:', msg);
         setInitError(msg);
+        localStorage.removeItem('inkwell_vault_path');
       } finally {
         setInitLoading(false);
       }
     }
-    loadDefault();
+    loadSaved();
   }, []);
 
   // ⌘K shortcut
@@ -350,6 +354,7 @@ function App() {
   const handleOpenFolder = async () => {
     const path = await openFolderDialog();
     if (path) {
+      localStorage.setItem('inkwell_vault_path', path);
       setVaultPath(path);
       const nodes = await readDirectory(path);
       setTree(nodes);
