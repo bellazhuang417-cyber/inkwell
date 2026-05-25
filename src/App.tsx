@@ -1004,7 +1004,8 @@ function App() {
     };
 
     const body = parseError
-      ? `<div class="parse-error"><strong>YAML parse error</strong><pre>${escHtml(parseError)}</pre></div>`
+      ? `<div class="parse-error"><strong>YAML parse error</strong><pre>${escHtml(parseError)}</pre></div>
+         <pre class="raw-fallback">${escHtml(content)}</pre>`
       : renderValue(parsed);
 
     return `<!DOCTYPE html>
@@ -1033,8 +1034,9 @@ function App() {
   .yaml-list { list-style: disc; padding-left: 20px; }
   .yaml-list li { padding: 2px 0; }
   .yaml-object.nested { padding-left: 12px; border-left: 2px solid var(--border); margin-top: 2px; }
-  .parse-error { background: #fff0f0; border: 1px solid #ffcccc; border-radius: 8px; padding: 16px; }
+  .parse-error { background: #fff0f0; border: 1px solid #ffcccc; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
   .parse-error pre { margin-top: 8px; font-size: 12px; color: #c00; }
+  .raw-fallback { background: #f7f8fa; border: 1px solid #e4e7ec; border-radius: 8px; padding: 16px; white-space: pre-wrap; word-break: break-all; color: #333; font-size: 12px; line-height: 1.6; }
 </style>
 </head>
 <body>${body}</body>
