@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { listen } from '@tauri-apps/api/event';
+import { isTauri } from './utils/env';
 import {
   FolderOpen,
   Folder,
@@ -22,7 +22,8 @@ import {
   readFile,
   openFolderDialog,
   watchDirectory,
-} from './utils/tauri-api';
+  restoreLastVault,
+} from './utils/fs';
 import './styles/global.css';
 
 // ---- File Tree Component ----
@@ -302,17 +303,14 @@ function App() {
   const mdEditorRef = useRef<HTMLDivElement>(null);
   const mdPreviewRef = useRef<HTMLDivElement>(null);
 
-  // Load vault on mount — restore last opened path from localStorage
+  // Load vault on mount — restore last opened folder
   useEffect(() => {
     async function loadSaved() {
-      const saved = localStorage.getItem('inkwell_vault_path');
-      if (!saved) {
-        setInitLoading(false);
-        return;
-      }
       try {
         setInitLoading(true);
         setInitError(null);
+        const saved = await restoreLastVault();
+        if (!saved) return;
         setVaultPath(saved);
         const nodes = await readDirectory(saved);
         setTree(nodes);
@@ -359,19 +357,31 @@ function App() {
     setTree(nodes);
   }, [vaultPath]);
 
-  // Watch for file system changes and auto-refresh (1s debounce)
+  // Watch for file system changes and auto-refresh
   useEffect(() => {
     if (!vaultPath) return;
-    let debounceTimer: ReturnType<typeof setTimeout> | null = null;
-    watchDirectory(vaultPath).catch(() => {});
-    const unlistenPromise = listen('directory-changed', () => {
-      if (debounceTimer) clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(() => handleRefresh(), 1000);
-    });
-    return () => {
-      if (debounceTimer) clearTimeout(debounceTimer);
-      unlistenPromise.then((unlisten) => unlisten());
-    };
+
+    if (isTauri()) {
+      // Tauri: use native file watcher events (1s debounce)
+      let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+      let cleanup: (() => void) | null = null;
+      watchDirectory(vaultPath).catch(() => {});
+      import('@tauri-apps/api/event').then(({ listen }) => {
+        const unlistenPromise = listen('directory-changed', () => {
+          if (debounceTimer) clearTimeout(debounceTimer);
+          debounceTimer = setTimeout(() => handleRefresh(), 1000);
+        });
+        cleanup = () => {
+          if (debounceTimer) clearTimeout(debounceTimer);
+          unlistenPromise.then((unlisten) => unlisten());
+        };
+      });
+      return () => cleanup?.();
+    } else {
+      // Browser: poll every 5 seconds
+      const interval = setInterval(() => handleRefresh(), 5000);
+      return () => clearInterval(interval);
+    }
   }, [vaultPath, handleRefresh]);
 
   // Open folder
