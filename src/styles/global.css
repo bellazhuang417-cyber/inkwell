@@ -164,6 +164,23 @@ kbd {
   padding: var(--hn-space-1) 0;
 }
 
+/* ---- Sidebar Resizer ---- */
+.sidebar-resizer {
+  width: 4px;
+  height: 100%;
+  cursor: col-resize;
+  background: transparent;
+  transition: background var(--hn-duration-fast);
+  flex-shrink: 0;
+  position: relative;
+  z-index: var(--hn-z-panel);
+}
+
+.sidebar-resizer:hover,
+.sidebar-resizer:active {
+  background: var(--hn-accent);
+}
+
 /* ---- Content Area ---- */
 .content-area {
   flex: 1;

@@ -303,6 +303,20 @@ function App() {
   const mdEditorRef = useRef<HTMLDivElement>(null);
   const mdPreviewRef = useRef<HTMLDivElement>(null);
 
+  // ---- Sidebar width (resizable) ----
+  const DEFAULT_SIDEBAR_WIDTH = 240;
+  const MIN_SIDEBAR_WIDTH = 180;
+  const MAX_SIDEBAR_WIDTH = 480;
+  const [sidebarWidth, setSidebarWidth] = useState(() => {
+    try {
+      const saved = localStorage.getItem('inkwell_sidebar_width');
+      return saved ? Math.max(MIN_SIDEBAR_WIDTH, Math.min(MAX_SIDEBAR_WIDTH, parseInt(saved, 10))) : DEFAULT_SIDEBAR_WIDTH;
+    } catch {
+      return DEFAULT_SIDEBAR_WIDTH;
+    }
+  });
+  const isResizing = useRef(false);
+
   // Load vault on mount — restore last opened folder
   useEffect(() => {
     async function loadSaved() {
@@ -356,6 +370,36 @@ function App() {
     const nodes = await readDirectory(vaultPath);
     setTree(nodes);
   }, [vaultPath]);
+
+  // ---- Sidebar resize handlers ----
+  const startResize = useCallback(() => {
+    isResizing.current = true;
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+  }, []);
+
+  const stopResize = useCallback(() => {
+    if (!isResizing.current) return;
+    isResizing.current = false;
+    document.body.style.cursor = '';
+    document.body.style.userSelect = '';
+    localStorage.setItem('inkwell_sidebar_width', String(sidebarWidth));
+  }, [sidebarWidth]);
+
+  const doResize = useCallback((e: MouseEvent) => {
+    if (!isResizing.current) return;
+    const newWidth = Math.max(MIN_SIDEBAR_WIDTH, Math.min(MAX_SIDEBAR_WIDTH, e.clientX));
+    setSidebarWidth(newWidth);
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('mousemove', doResize);
+    window.addEventListener('mouseup', stopResize);
+    return () => {
+      window.removeEventListener('mousemove', doResize);
+      window.removeEventListener('mouseup', stopResize);
+    };
+  }, [doResize, stopResize]);
 
   // Watch for file system changes and auto-refresh
   useEffect(() => {
@@ -984,7 +1028,7 @@ function App() {
       {/* Main Area */}
       <div className="app-main">
         {/* Sidebar */}
-        <div className="sidebar">
+        <div className="sidebar" style={{ width: sidebarWidth }}>
           <div className="sidebar-header">
             <span>{vaultPath ? vaultPath.split('/').pop() : '未打开'}</span>
             <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -1028,6 +1072,13 @@ function App() {
             </div>
           )}
         </div>
+
+        {/* Sidebar Resizer */}
+        <div
+          className="sidebar-resizer"
+          onMouseDown={startResize}
+          title="拖动调整侧边栏宽度"
+        />
 
         {/* Content Area */}
         <div className="content-area">
