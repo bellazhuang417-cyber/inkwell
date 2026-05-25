@@ -4,14 +4,14 @@ Inkwell is a notebook app for browsing and managing local **.html** and **.md** 
 
 Built for people with large collections of AI-generated HTML files (reports, visualizations, card notes) that Obsidian can't open and Finder can't preview.
 
-**🌐 Web version (Chrome/Edge, any OS):** [inkwell-bz.vercel.app](https://inkwell-bz.vercel.app)
+**🌐 Web version (Chrome/Edge, any OS):** [bellazhuang417-cyber.github.io/inkwell](https://bellazhuang417-cyber.github.io/inkwell/)
 **🖥️ Desktop version (macOS Apple Silicon):** [Releases](https://github.com/bellazhuang417-cyber/inkwell/releases)
 
 ---
 
 **左边文件树，右边直接渲染。Markdown 能看，HTML 也能看，不用切浏览器。**
 
-**🌐 网页版（Chrome/Edge，任意系统）：** [inkwell-bz.vercel.app](https://inkwell-bz.vercel.app)
+**🌐 网页版（Chrome/Edge，任意系统）：** [bellazhuang417-cyber.github.io/inkwell](https://bellazhuang417-cyber.github.io/inkwell/)
 **🖥️ 桌面版（macOS Apple Silicon）：** [下载 Releases](https://github.com/bellazhuang417-cyber/inkwell/releases)
 
 ---
