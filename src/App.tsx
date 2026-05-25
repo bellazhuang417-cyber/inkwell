@@ -966,7 +966,8 @@ function App() {
     let parsed: unknown;
     let parseError: string | null = null;
     try {
-      parsed = jsYaml.load(content);
+      const docs = jsYaml.loadAll(content);
+      parsed = docs.length === 1 ? docs[0] : docs;
     } catch (e) {
       parseError = e instanceof Error ? e.message : String(e);
     }
