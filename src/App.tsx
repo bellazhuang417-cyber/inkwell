@@ -955,14 +955,18 @@ function App() {
 </html>`;
     }
     if (file.fileType === 'yaml') {
-      return buildYamlSrcDoc(file.content);
+      const yamlResult = buildYamlSrcDoc(file.content);
+      if (yamlResult !== null) return yamlResult;
+      // Parse failed — fall back to markdown rendering
+      const mdFallback = { ...file, fileType: 'md' as const };
+      return buildSrcDoc(mdFallback);
     }
     // For HTML files, pass content directly
     return file.content;
   };
 
-  // ---- Build srcDoc for YAML view ----
-  const buildYamlSrcDoc = (content: string): string => {
+  // ---- Build srcDoc for YAML view — returns null if parse fails (caller falls back to MD) ----
+  const buildYamlSrcDoc = (content: string): string | null => {
     let parsed: unknown;
     let parseError: string | null = null;
     try {
@@ -1003,10 +1007,8 @@ function App() {
       return escHtml(String(val));
     };
 
-    const body = parseError
-      ? `<div class="parse-error"><strong>YAML parse error</strong><pre>${escHtml(parseError)}</pre></div>
-         <pre class="raw-fallback">${escHtml(content)}</pre>`
-      : renderValue(parsed);
+    if (parseError) return null;
+    const body = renderValue(parsed);
 
     return `<!DOCTYPE html>
 <html lang="en">
