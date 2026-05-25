@@ -30,6 +30,8 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          VITE_GITHUB_PAGES: true
 
       - uses: actions/configure-pages@v4
         with:
