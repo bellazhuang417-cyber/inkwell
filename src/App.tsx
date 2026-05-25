@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import jsYaml from 'js-yaml';
 import { isTauri } from './utils/env';
 import {
   FolderOpen,
@@ -421,8 +420,7 @@ function App() {
 
       const fileType: OpenFile['fileType'] =
         ext === 'html' || ext === 'htm' ? 'html'
-        : ext === 'md' || ext === 'mdx' ? 'md'
-        : ext === 'yaml' || ext === 'yml' ? 'yaml'
+        : ext === 'md' || ext === 'mdx' || ext === 'yaml' || ext === 'yml' ? 'md'
         : 'other';
 
       const file: OpenFile = {
@@ -954,95 +952,8 @@ function App() {
 <body>${rendered}</body>
 </html>`;
     }
-    if (file.fileType === 'yaml') {
-      const yamlResult = buildYamlSrcDoc(file.content);
-      if (yamlResult !== null) return yamlResult;
-      // Parse failed — fall back to markdown rendering
-      const mdFallback = { ...file, fileType: 'md' as const };
-      return buildSrcDoc(mdFallback);
-    }
     // For HTML files, pass content directly
     return file.content;
-  };
-
-  // ---- Build srcDoc for YAML view — returns null if parse fails (caller falls back to MD) ----
-  const buildYamlSrcDoc = (content: string): string | null => {
-    let parsed: unknown;
-    let parseError: string | null = null;
-    try {
-      const docs = jsYaml.loadAll(content);
-      parsed = docs.length === 1 ? docs[0] : docs;
-    } catch (e) {
-      parseError = e instanceof Error ? e.message : String(e);
-    }
-
-    const escHtml = (s: string) =>
-      String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-
-    const renderValue = (val: unknown, depth = 0): string => {
-      if (val === null || val === undefined) return '<span class="yaml-null">null</span>';
-      if (typeof val === 'boolean') return `<span class="yaml-bool">${val}</span>`;
-      if (typeof val === 'number') return `<span class="yaml-num">${val}</span>`;
-      if (typeof val === 'string') {
-        if (val.length > 120) return `<span class="yaml-str">${escHtml(val.slice(0, 120))}…</span>`;
-        return `<span class="yaml-str">${escHtml(val)}</span>`;
-      }
-      if (Array.isArray(val)) {
-        if (val.length === 0) return '<span class="yaml-empty">[]</span>';
-        const items = val.map(item =>
-          `<li>${renderValue(item, depth + 1)}</li>`
-        ).join('');
-        return `<ul class="yaml-list">${items}</ul>`;
-      }
-      if (typeof val === 'object') {
-        const entries = Object.entries(val as Record<string, unknown>);
-        if (entries.length === 0) return '<span class="yaml-empty">{}</span>';
-        const rows = entries.map(([k, v]) =>
-          `<div class="yaml-row"><span class="yaml-key">${escHtml(k)}</span><span class="yaml-colon">:</span><span class="yaml-val">${renderValue(v, depth + 1)}</span></div>`
-        ).join('');
-        return depth === 0
-          ? `<div class="yaml-object root">${rows}</div>`
-          : `<div class="yaml-object nested">${rows}</div>`;
-      }
-      return escHtml(String(val));
-    };
-
-    if (parseError) return null;
-    const body = renderValue(parsed);
-
-    return `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<style>
-  :root {
-    --bg: #f7f8fa; --surface: #ffffff; --border: #e4e7ec;
-    --key: #1B365D; --str: #2e7d32; --num: #c62828; --bool: #6a1a9a;
-    --null: #888; --text: #1a1a1a;
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: "SF Mono", "JetBrains Mono", Consolas, monospace; font-size: 13px; line-height: 1.6; background: var(--bg); color: var(--text); padding: 24px; }
-  .yaml-object.root { display: grid; grid-template-columns: 1fr; gap: 2px; }
-  .yaml-row { display: flex; align-items: flex-start; padding: 5px 12px; border-radius: 5px; }
-  .yaml-row:hover { background: rgba(27,54,93,0.05); }
-  .yaml-key { color: var(--key); font-weight: 600; min-width: 140px; flex-shrink: 0; }
-  .yaml-colon { color: #999; margin: 0 8px; flex-shrink: 0; }
-  .yaml-val { flex: 1; }
-  .yaml-str { color: var(--str); }
-  .yaml-num { color: var(--num); }
-  .yaml-bool { color: var(--bool); font-weight: 600; }
-  .yaml-null { color: var(--null); font-style: italic; }
-  .yaml-empty { color: var(--null); }
-  .yaml-list { list-style: disc; padding-left: 20px; }
-  .yaml-list li { padding: 2px 0; }
-  .yaml-object.nested { padding-left: 12px; border-left: 2px solid var(--border); margin-top: 2px; }
-  .parse-error { background: #fff0f0; border: 1px solid #ffcccc; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
-  .parse-error pre { margin-top: 8px; font-size: 12px; color: #c00; }
-  .raw-fallback { background: #f7f8fa; border: 1px solid #e4e7ec; border-radius: 8px; padding: 16px; white-space: pre-wrap; word-break: break-all; color: #333; font-size: 12px; line-height: 1.6; }
-</style>
-</head>
-<body>${body}</body>
-</html>`;
   };
 
   return (
@@ -1139,8 +1050,6 @@ function App() {
                     <span className="html-filename">{currentFile.name}</span>
                     {currentFile.fileType === 'md' ? (
                       <span className="html-trust-badge">渲染预览</span>
-                    ) : currentFile.fileType === 'yaml' ? (
-                      <span className="html-trust-badge">YAML 渲染</span>
                     ) : (
                       <span className="html-trust-badge">本地信任</span>
                     )}
@@ -1153,32 +1062,6 @@ function App() {
                     sandbox="allow-scripts allow-same-origin"
                     title={currentFile.name}
                   />
-                </div>
-              </div>
-            )}
-
-            {viewType === 'yaml' && currentFile && (
-              <div className="md-editor-view">
-                <div className="md-editor-meta">
-                  <div className="md-filename">
-                    <FileText size={14} style={{ color: 'var(--hn-secondary)' }} />
-                    {currentFile.name} — 原始源码
-                  </div>
-                </div>
-                <div className="md-editor-split" style={{ gridTemplateColumns: '1fr' }}>
-                  <div className="md-editor-pane" style={{ width: '100%' }}>
-                    <textarea
-                      style={{
-                        width: '100%', height: '100%', border: 'none', outline: 'none',
-                        resize: 'none', padding: '16px 24px',
-                        fontFamily: 'var(--hn-font-code)', fontSize: '13px',
-                        lineHeight: '1.6', color: 'var(--hn-text-primary)',
-                        background: 'var(--hn-surface)',
-                      }}
-                      value={currentFile.content}
-                      readOnly
-                    />
-                  </div>
                 </div>
               </div>
             )}
@@ -1289,15 +1172,6 @@ function App() {
               >
                 MD
               </button>
-              {currentFile?.fileType === 'yaml' && (
-                <button
-                  className={`view-btn ${viewType === 'yaml' ? 'active' : ''}`}
-                  onClick={() => setViewType('yaml')}
-                  title="YAML 源码"
-                >
-                  YAML
-                </button>
-              )}
             </div>
           </div>
         </div>
