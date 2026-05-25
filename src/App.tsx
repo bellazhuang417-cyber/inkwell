@@ -18,7 +18,6 @@ import type { FileNode, OpenFile, ViewType } from './types';
 import {
   readDirectory,
   readFile,
-  getHomeDir,
   openFolderDialog,
 } from './utils/tauri-api';
 import './styles/global.css';
