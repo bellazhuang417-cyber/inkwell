@@ -27,6 +27,10 @@ tar -xzf "$TMP/$ASSET" -C "$TMP"
 # Remove macOS quarantine flag so the app opens without Gatekeeper blocking
 xattr -cr "$TMP/Inkwell.app" 2>/dev/null || true
 
+echo "Quitting Inkwell if running..."
+pkill -x "Inkwell" 2>/dev/null || true
+sleep 1
+
 echo "Installing to $INSTALL_DIR..."
 if [ -d "$INSTALL_DIR/Inkwell.app" ]; then
   rm -rf "$INSTALL_DIR/Inkwell.app"
@@ -37,4 +41,5 @@ rm -rf "$TMP"
 
 echo ""
 echo "Done! Inkwell $TAG is installed."
-echo "Open it from Applications or run: open /Applications/Inkwell.app"
+echo "Launching Inkwell..."
+open /Applications/Inkwell.app
