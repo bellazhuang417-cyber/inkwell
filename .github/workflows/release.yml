@@ -5,10 +5,6 @@ on:
     tags:
       - 'v*.*.*'
   workflow_dispatch:
-    inputs:
-      tag:
-        description: 'Release tag (e.g. v0.1.12)'
-        required: true
 
 permissions:
   contents: write
@@ -55,7 +51,7 @@ jobs:
           APP=$(find src-tauri/target/aarch64-apple-darwin/release/bundle/macos -name "*.app" | head -1)
           DIR=$(dirname "$APP")
           NAME=$(basename "$APP")
-          TAG=${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || github.ref_name }}
+          TAG=${{ github.ref_name }}
           cd "$DIR"
           tar -czf "Inkwell_${TAG}_aarch64.tar.gz" "$NAME"
           echo "ASSET=$DIR/Inkwell_${TAG}_aarch64.tar.gz" >> $GITHUB_ENV
