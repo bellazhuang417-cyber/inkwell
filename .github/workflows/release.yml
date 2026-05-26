@@ -55,7 +55,7 @@ jobs:
           APP=$(find src-tauri/target/aarch64-apple-darwin/release/bundle/macos -name "*.app" | head -1)
           DIR=$(dirname "$APP")
           NAME=$(basename "$APP")
-          TAG=${{ github.ref_name }}
+          TAG=${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || github.ref_name }}
           cd "$DIR"
           tar -czf "Inkwell_${TAG}_aarch64.tar.gz" "$NAME"
           echo "ASSET=$DIR/Inkwell_${TAG}_aarch64.tar.gz" >> $GITHUB_ENV
