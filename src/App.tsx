@@ -300,6 +300,7 @@ function App() {
   const [initError, setInitError] = useState<string | null>(null);
   const [initLoading, setInitLoading] = useState(true);
   const [htmlOnly, setHtmlOnly] = useState(false);
+  const [treeKey, setTreeKey] = useState(0);
   const mdEditorRef = useRef<HTMLDivElement>(null);
   const mdPreviewRef = useRef<HTMLDivElement>(null);
 
@@ -369,6 +370,7 @@ function App() {
     if (!vaultPath) return;
     const nodes = await readDirectory(vaultPath);
     setTree(nodes);
+    setTreeKey(k => k + 1); // force FileTree to remount and clear cached child state
   }, [vaultPath]);
 
   // ---- Sidebar resize handlers ----
@@ -1062,7 +1064,7 @@ function App() {
               </div>
             </div>
           ) : tree.length > 0 ? (
-            <FileTree nodes={tree} onFileOpen={handleFileOpen} activePath={currentFile?.path ?? null} onFolderExpand={handleFolderExpand} htmlOnly={htmlOnly} />
+            <FileTree key={treeKey} nodes={tree} onFileOpen={handleFileOpen} activePath={currentFile?.path ?? null} onFolderExpand={handleFolderExpand} htmlOnly={htmlOnly} />
           ) : (
             <div className="empty-state" style={{ padding: '32px 16px' }}>
               <Folder size={40} style={{ color: 'var(--hn-border)', marginBottom: 12 }} />
