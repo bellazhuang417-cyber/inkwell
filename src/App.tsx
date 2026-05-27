@@ -467,6 +467,7 @@ function App() {
       const fileType: OpenFile['fileType'] =
         ext === 'html' || ext === 'htm' ? 'html'
         : ext === 'md' || ext === 'mdx' || ext === 'yaml' || ext === 'yml' ? 'md'
+        : ext === 'json' ? 'json'
         : 'other';
 
       const file: OpenFile = {
@@ -774,6 +775,73 @@ function App() {
     }).join('\n\n');
   }
 
+  // ---- Build srcDoc for JSON view ----
+  const buildJsonSrcDoc = (content: string): string => {
+    let parsed: unknown;
+    let parseError: string | null = null;
+    try {
+      parsed = JSON.parse(content);
+    } catch (e) {
+      parseError = e instanceof Error ? e.message : String(e);
+    }
+
+    const esc = (s: string) =>
+      String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+    const renderNode = (val: unknown, depth = 0): string => {
+      if (val === null) return '<span class="jn">null</span>';
+      if (val === true || val === false) return `<span class="jb">${val}</span>`;
+      if (typeof val === 'number') return `<span class="jnum">${val}</span>`;
+      if (typeof val === 'string') return `<span class="jstr">"${esc(val)}"</span>`;
+      if (Array.isArray(val)) {
+        if (val.length === 0) return '<span class="jpunct">[]</span>';
+        const items = val.map((item, i) =>
+          `<div class="jrow arr-item"><span class="jindex">${i}</span><span class="jpunct">:</span><span class="jval">${renderNode(item, depth + 1)}</span></div>`
+        ).join('');
+        return `<div class="jblock">${items}</div>`;
+      }
+      if (typeof val === 'object' && val !== null) {
+        const entries = Object.entries(val as Record<string, unknown>);
+        if (entries.length === 0) return '<span class="jpunct">{}</span>';
+        const rows = entries.map(([k, v]) =>
+          `<div class="jrow"><span class="jkey">${esc(k)}</span><span class="jpunct">:</span><span class="jval">${renderNode(v, depth + 1)}</span></div>`
+        ).join('');
+        return `<div class="jblock">${rows}</div>`;
+      }
+      return esc(String(val));
+    };
+
+    const body = parseError
+      ? `<div class="jerr"><strong>JSON parse error</strong><pre>${esc(parseError)}</pre></div><pre class="jraw">${esc(content)}</pre>`
+      : renderNode(parsed);
+
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: "SF Mono", "JetBrains Mono", Consolas, monospace; font-size: 13px; line-height: 1.7; background: #1e1e2e; color: #cdd6f4; padding: 20px; }
+  .jblock { padding-left: 20px; border-left: 1px solid #313244; margin: 2px 0; }
+  .jrow { display: flex; align-items: flex-start; gap: 6px; padding: 1px 4px; border-radius: 3px; }
+  .jrow:hover { background: rgba(255,255,255,0.05); }
+  .jkey { color: #89b4fa; font-weight: 500; white-space: nowrap; }
+  .jindex { color: #6c7086; min-width: 24px; text-align: right; font-size: 11px; }
+  .jpunct { color: #6c7086; flex-shrink: 0; }
+  .jval { flex: 1; word-break: break-word; }
+  .jstr { color: #a6e3a1; }
+  .jnum { color: #fab387; }
+  .jb   { color: #cba6f7; }
+  .jn   { color: #f38ba8; }
+  .jerr { background: rgba(243,139,168,0.1); border: 1px solid rgba(243,139,168,0.3); border-radius: 8px; padding: 16px; margin-bottom: 16px; color: #f38ba8; }
+  .jerr pre { margin-top: 8px; font-size: 12px; }
+  .jraw { white-space: pre-wrap; word-break: break-all; color: #6c7086; font-size: 12px; margin-top: 8px; }
+</style>
+</head>
+<body>${body}</body>
+</html>`;
+  };
+
   // ---- Build srcDoc for HTML view ----
   const buildSrcDoc = (file: OpenFile): string => {
     if (file.fileType === 'md') {
@@ -998,6 +1066,9 @@ function App() {
 <body>${rendered}</body>
 </html>`;
     }
+    if (file.fileType === 'json') {
+      return buildJsonSrcDoc(file.content);
+    }
     // For HTML files, pass content directly
     return file.content;
   };
@@ -1103,6 +1174,8 @@ function App() {
                     <span className="html-filename">{currentFile.name}</span>
                     {currentFile.fileType === 'md' ? (
                       <span className="html-trust-badge">渲染预览</span>
+                    ) : currentFile.fileType === 'json' ? (
+                      <span className="html-trust-badge">JSON 渲染</span>
                     ) : (
                       <span className="html-trust-badge">本地信任</span>
                     )}
@@ -1115,6 +1188,32 @@ function App() {
                     sandbox="allow-scripts allow-same-origin"
                     title={currentFile.name}
                   />
+                </div>
+              </div>
+            )}
+
+            {viewType === 'json' && currentFile && (
+              <div className="md-editor-view">
+                <div className="md-editor-meta">
+                  <div className="md-filename">
+                    <FileText size={14} style={{ color: 'var(--hn-secondary)' }} />
+                    {currentFile.name} — 原始源码
+                  </div>
+                </div>
+                <div className="md-editor-split" style={{ gridTemplateColumns: '1fr' }}>
+                  <div className="md-editor-pane" style={{ width: '100%' }}>
+                    <textarea
+                      style={{
+                        width: '100%', height: '100%', border: 'none', outline: 'none',
+                        resize: 'none', padding: '16px 24px',
+                        fontFamily: 'var(--hn-font-code)', fontSize: '13px',
+                        lineHeight: '1.6', color: 'var(--hn-text-primary)',
+                        background: 'var(--hn-surface)',
+                      }}
+                      value={currentFile.content}
+                      readOnly
+                    />
+                  </div>
                 </div>
               </div>
             )}
@@ -1225,6 +1324,15 @@ function App() {
               >
                 {currentFile?.ext === 'yaml' || currentFile?.ext === 'yml' ? 'YAML' : 'MD'}
               </button>
+              {currentFile?.fileType === 'json' && (
+                <button
+                  className={`view-btn ${viewType === 'json' ? 'active' : ''}`}
+                  onClick={() => setViewType('json')}
+                  title="JSON 源码"
+                >
+                  JSON
+                </button>
+              )}
             </div>
           </div>
         </div>

@@ -21,11 +21,11 @@ export interface OpenFile {
   ext: string;
   content: string;
   folder: string;
-  fileType: 'html' | 'md' | 'yaml' | 'other';
+  fileType: 'html' | 'md' | 'yaml' | 'json' | 'other';
 }
 
 // View type
-export type ViewType = 'empty' | 'html' | 'md' | 'yaml';
+export type ViewType = 'empty' | 'html' | 'md' | 'yaml' | 'json';
 
 // Search result
 export interface SearchResult {
