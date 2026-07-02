@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { isTauri } from './utils/env';
+import { openExternalUrl } from './utils/openUrl';
 import {
   FolderOpen,
   Folder,
@@ -403,6 +404,18 @@ function App() {
     };
   }, [doResize, stopResize]);
 
+  // Route link-open requests posted from preview iframes to the system browser
+  useEffect(() => {
+    const onMessage = (e: MessageEvent) => {
+      const data = e.data;
+      if (data && typeof data === 'object' && data.type === 'inkwell-open-url' && typeof data.url === 'string') {
+        openExternalUrl(data.url);
+      }
+    };
+    window.addEventListener('message', onMessage);
+    return () => window.removeEventListener('message', onMessage);
+  }, []);
+
   // Watch for file system changes and auto-refresh
   useEffect(() => {
     if (!vaultPath) return;
@@ -775,6 +788,32 @@ function App() {
     }).join('\n\n');
   }
 
+  // Script injected into every iframe srcDoc so that link clicks bubble
+  // up to the React parent, which then hands them to the system browser
+  // via tauri-plugin-opener. Same-origin srcDoc iframes can postMessage
+  // to their parent even under sandbox="allow-scripts allow-same-origin".
+  const LINK_INTERCEPTOR_SCRIPT = `<script>
+(function(){
+  document.addEventListener('click', function(e){
+    var a = e.target && e.target.closest ? e.target.closest('a') : null;
+    if (!a) return;
+    var href = a.getAttribute('href') || '';
+    if (/^https?:\\/\\//i.test(href)) {
+      e.preventDefault();
+      try { window.parent.postMessage({ type: 'inkwell-open-url', url: href }, '*'); } catch(_) {}
+    }
+  }, true);
+})();
+</script>`;
+
+  const injectLinkInterceptor = (html: string): string => {
+    const closingBody = html.lastIndexOf('</body>');
+    if (closingBody >= 0) {
+      return html.slice(0, closingBody) + LINK_INTERCEPTOR_SCRIPT + html.slice(closingBody);
+    }
+    return html + LINK_INTERCEPTOR_SCRIPT;
+  };
+
   // ---- Build srcDoc for JSON view ----
   const buildJsonSrcDoc = (content: string): string => {
     let parsed: unknown;
@@ -815,7 +854,7 @@ function App() {
       ? `<div class="jerr"><strong>JSON parse error</strong><pre>${esc(parseError)}</pre></div><pre class="jraw">${esc(content)}</pre>`
       : renderNode(parsed);
 
-    return `<!DOCTYPE html>
+    return injectLinkInterceptor(`<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -839,14 +878,14 @@ function App() {
 </style>
 </head>
 <body>${body}</body>
-</html>`;
+</html>`);
   };
 
   // ---- Build srcDoc for HTML view ----
   const buildSrcDoc = (file: OpenFile): string => {
     if (file.fileType === 'md') {
       const rendered = renderMarkdown(file.content);
-      return `<!DOCTYPE html>
+      return injectLinkInterceptor(`<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -1064,13 +1103,13 @@ function App() {
 </style>
 </head>
 <body>${rendered}</body>
-</html>`;
+</html>`);
     }
     if (file.fileType === 'json') {
       return buildJsonSrcDoc(file.content);
     }
-    // For HTML files, pass content directly
-    return file.content;
+    // For HTML files, pass content through the interceptor so links open externally
+    return injectLinkInterceptor(file.content);
   };
 
   return (
@@ -1248,7 +1287,20 @@ function App() {
                       }
                     />
                   </div>
-                  <div className="md-preview-pane" ref={mdPreviewRef}>
+                  <div
+                    className="md-preview-pane"
+                    ref={mdPreviewRef}
+                    onClick={(e) => {
+                      const target = e.target as HTMLElement | null;
+                      const anchor = target?.closest?.('a') as HTMLAnchorElement | null;
+                      if (!anchor) return;
+                      const href = anchor.getAttribute('href') || '';
+                      if (/^https?:\/\//i.test(href)) {
+                        e.preventDefault();
+                        openExternalUrl(href);
+                      }
+                    }}
+                  >
                     <div
                       dangerouslySetInnerHTML={{
                         __html: renderMarkdown(currentFile.content),

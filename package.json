@@ -13,6 +13,7 @@
   "dependencies": {
     "@tauri-apps/api": "^2.11.0",
     "@tauri-apps/plugin-dialog": "^2.7.1",
+    "@tauri-apps/plugin-opener": "^2.5.0",
     "js-yaml": "^4.1.1",
     "lucide-react": "^1.16.0",
     "react": "^19.2.6",

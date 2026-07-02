@@ -16,6 +16,8 @@
     "fs:allow-exists",
     "fs:allow-remove",
     "fs:allow-rename",
-    "fs:allow-copy-file"
+    "fs:allow-copy-file",
+    "opener:default",
+    "opener:allow-open-url"
   ]
 }
